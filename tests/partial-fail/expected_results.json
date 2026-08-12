@@ -1,5 +1,19 @@
 {
-  "version": 1,
+  "version": 3,
   "status": "fail",
-  "message": "TODO: replace with correct output"
+  "tests": [
+    {
+      "name": "no name given",
+      "status": "fail",
+      "message": "expected: One for you, one for me.\nactual:   One for , one for me."
+    },
+    {
+      "name": "a name given",
+      "status": "pass"
+    },
+    {
+      "name": "another name given",
+      "status": "pass"
+    }
+  ]
 }

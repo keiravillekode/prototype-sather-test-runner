@@ -16,7 +16,7 @@
 set -e
 
 # Build the Docker image
-docker build --rm -t exercism/replace-this-with-the-track-slug-test-runner .
+docker build --rm -t exercism/sather-test-runner .
 
 # Run the Docker image using the settings mimicking the production environment
 docker run \
@@ -28,4 +28,4 @@ docker run \
     --volume "${PWD}/bin/run-tests.sh:/opt/test-runner/bin/run-tests.sh" \
     --workdir /opt/test-runner \
     --entrypoint /opt/test-runner/bin/run-tests.sh \
-    exercism/replace-this-with-the-track-slug-test-runner
+    exercism/sather-test-runner

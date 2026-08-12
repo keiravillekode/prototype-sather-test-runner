@@ -1,5 +1,5 @@
 {
-  "version": 1,
-  "status": "fail",
-  "message": "TODO: replace with correct output"
+  "version": 3,
+  "status": "error",
+  "message": "two_fer_test.sa:10:35: There is no class named TWO_FER."
 }

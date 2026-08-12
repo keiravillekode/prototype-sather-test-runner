@@ -1,0 +1,116 @@
+-- Shared test harness for the Exercism Sather track.
+--
+-- Wraps the standard library TEST class (Library/System/test.sa) so that a
+-- test file keeps the idiomatic Sather API -- class_name, test, finish --
+-- while the test runner additionally gets one machine-readable record per
+-- test on stderr and a meaningful process exit status.
+--
+-- TEST on its own is not enough for a runner:
+--   * it always exits 0, even when tests fail;
+--   * its human-readable output puts values on their own lines, so a value
+--     containing a newline cannot be told apart from the next line of the
+--     report.
+-- Both are handled here without changing what a test file looks like.
+--
+-- Records are written to stderr so that stdout keeps the readable report a
+-- student sees when running the tests by hand.
+--
+--   ##EX|<name>|<pass|fail>|<expected>|<actual>|##
+--   ##EXDONE|<total>|<failures>|##
+--
+-- Every field is escaped: '\' as '\\', '|' as '\p', newline as '\n' and
+-- carriage return as '\r'. That keeps a record on exactly one line and
+-- keeps the '|' separator unambiguous.
+
+partial class EXERCISM_TEST is
+
+   include TEST
+      test       -> lib_test,
+      class_name -> lib_class_name,
+      finish     -> lib_finish;
+
+   private shared ex_count    : INT;
+   private shared ex_failures : INT;
+
+   private escape(s : STR) : STR is
+      -- Make `s' safe to place in one '|'-separated record field.
+      if void(s) then return "" end;
+      r : FSTR := #FSTR(s.size + 8);
+      loop
+         c ::= s.elt!;
+         case c
+         when '\\' then r := r + "\\\\";
+         when '|'  then r := r + "\\p";
+         when '\n' then r := r + "\\n";
+         when '\r' then r := r + "\\r";
+         else           r := r + c;
+         end;
+      end;
+      return r.str;
+   end;
+
+   private emit(name, status, expected, actual : STR) is
+      -- Leading newline: TEST::finish writes the class name to stderr with
+      -- no line terminator, so without this a record can end up appended to
+      -- whatever was written last and stop being the first thing on its
+      -- line, which the runner would not recognise.
+      --
+      -- Records go to stderr and the readable report to stdout. The runner
+      -- parses stderr alone, so a solution printing something record-shaped
+      -- with #OUT cannot manufacture a result. A solution that deliberately
+      -- writes records to #ERR still can; anchoring at the start of a line
+      -- does not prevent that, and an earlier version of this comment
+      -- wrongly claimed it did.
+      #ERR + "\n##EX|" + escape(name) + "|" + status + "|"
+           + escape(expected) + "|" + escape(actual) + "|##\n";
+   end;
+
+   class_name(nm : STR) is
+      -- Name the class under test. Must be called before any test.
+      ex_count := 0;
+      ex_failures := 0;
+      lib_class_name(nm);
+   end;
+
+   test(doc, does, should : $STR) is
+      -- Assert that `does' and `should' have the same string form.
+      n ::= doc.str;
+      d ::= does.str;
+      s ::= should.str;
+      lib_test(n, d, s);
+      ex_count := ex_count + 1;
+      if d.is_eq(s) then
+         emit(n, "pass", s, d);
+      else
+         ex_failures := ex_failures + 1;
+         emit(n, "fail", s, d);
+      end;
+   end;
+
+   -- Exception assertions.
+   --
+   -- There is deliberately no closure-based helper here. Sather cannot
+   -- overload on a bound routine's return type, so one helper could only
+   -- ever cover a single return type; and binding at all drags in
+   -- TEST::raise_test, which does not compile in 1.2.2 ("Dispatched bound
+   -- routines are not implemented yet"). Write the protect block inline:
+   --
+   --    protect
+   --       ignored ::= <call under test>;
+   --       test("name", "no exception raised", "expected message");
+   --    when $STR then
+   --       test("name", exception.str, "expected message");
+   --    end;
+   --
+   -- The `when $STR' arm matches the string a Sather `raise' carries.
+
+   finish is
+      -- Print the summary, emit the trailing record, and set exit status.
+      lib_finish;
+      #ERR + "\n##EXDONE|" + ex_count + "|" + ex_failures + "|##\n";
+      if ex_failures > 0 then
+         UNIX::exit(1);
+      end;
+   end;
+
+end; -- class EXERCISM_TEST

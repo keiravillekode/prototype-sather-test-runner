@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 3,
   "status": "error",
-  "message": "TODO: replace with correct output"
+  "message": "two_fer.sa:6:1: 'end' expected, but found end of file (in routine/iter body)"
 }

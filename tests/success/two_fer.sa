@@ -1,0 +1,9 @@
+class TWO_FER is
+
+   two_fer(name : STR) : STR is
+      who ::= name;
+      if void(who) then who := "you" end;
+      return "One for " + who + ", one for me.";
+   end;
+
+end; -- class TWO_FER

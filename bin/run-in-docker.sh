@@ -33,7 +33,7 @@ output_dir=$(realpath "${3%/}")
 mkdir -p "${output_dir}"
 
 # Build the Docker image
-docker build --rm -t exercism/replace-this-with-the-track-slug-test-runner .
+docker build --rm -t exercism/sather-test-runner .
 
 # Run the Docker image using the settings mimicking the production environment
 docker run \
@@ -43,4 +43,4 @@ docker run \
     --mount type=bind,src="${solution_dir}",dst=/solution \
     --mount type=bind,src="${output_dir}",dst=/output \
     --mount type=tmpfs,dst=/tmp \
-    exercism/replace-this-with-the-track-slug-test-runner "${slug}" /solution /output 
+    exercism/sather-test-runner "${slug}" /solution /output 

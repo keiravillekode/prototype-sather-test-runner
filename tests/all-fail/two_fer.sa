@@ -1,0 +1,9 @@
+class TWO_FER is
+
+   two_fer(name : STR) : STR is
+      -- Return "One for <name>, one for me.".
+      -- When `name' is void, use "you" instead.
+      return "";
+   end;
+
+end; -- class TWO_FER

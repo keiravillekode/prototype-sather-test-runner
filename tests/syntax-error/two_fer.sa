@@ -1,0 +1,6 @@
+class TWO_FER is
+
+   two_fer(name : STR) : STR is
+      return "One for you, one for me."
+   -- missing 'end' for the routine and the class
+

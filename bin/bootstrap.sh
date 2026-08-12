@@ -45,8 +45,8 @@ REPO_DIR=$(mktemp -d)
 cp -a . "${REPO_DIR}"
 cd "${REPO_DIR}" || die "Failed to cd to ${REPO_DIR}"
 
-mapfile -t files < <(git grep --files-with-matches replace-this-with-the-track-slug)
-perl -pi -e "s/replace-this-with-the-track-slug/${SLUG}/g" "${files[@]}"
+mapfile -t files < <(git grep --files-with-matches sather)
+perl -pi -e "s/sather/${SLUG}/g" "${files[@]}"
 
 mapfile -t files < <(git grep --files-with-matches replace-this-with-the-track-name)
 perl -pi -e "s/replace-this-with-the-track-name/${LANGUAGE}/g" "${files[@]}"

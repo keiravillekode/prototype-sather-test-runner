@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     name: Tests
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -27,7 +27,7 @@ jobs:
           context: .
           push: false
           load: true
-          tags: exercism/replace-this-with-the-track-slug-test-runner
+          tags: exercism/sather-test-runner
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

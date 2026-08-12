@@ -1,0 +1,8 @@
+class TWO_FER is
+
+   two_fer(name : STR) : STR is
+      -- Handles the named case but not the void one.
+      return "One for " + name + ", one for me.";
+   end;
+
+end; -- class TWO_FER
